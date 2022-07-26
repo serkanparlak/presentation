@@ -11,7 +11,8 @@ builder.Services.AddSwaggerGen();
 // add sql dbcontext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql("User ID=admin;Password=admin;Server=localhost;Port=5432;Database=postgres;Integrated Security=true;Pooling=true;"));
-
+// mongodb
+builder.Services.AddSingleton<MongoDBService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
