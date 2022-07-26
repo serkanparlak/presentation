@@ -10,15 +10,14 @@ public class MongoDBService
 
     public MongoDBService()
     {
-        var client = new MongoClient("mongodb://admin:admin@mongo:27017/");
+        var client = new MongoClient("mongodb://admin:admin@localhost:27017");
         var database = client.GetDatabase("presentation");
         _playlistCollection = database.GetCollection<Playlist>("playlist");
     }
 
-    public async Task<List<Playlist>> GetAllAsync()
+    public List<Playlist> GetAll(int amount)
     {
-        var list = await _playlistCollection.FindAsync(x => true);
-        return list.ToList();
+        return _playlistCollection.Find(x => true).Limit(amount).ToList();
     }
 
     public async Task CreateAsync(Playlist playlist)
@@ -28,7 +27,9 @@ public class MongoDBService
 
     public async Task AddBulk(List<Playlist> playlist)
     {
-        await _playlistCollection.BulkWriteAsync((IEnumerable<WriteModel<Playlist>>)playlist);
+        var listWrites = new List<WriteModel<Playlist>>();
+        listWrites.AddRange(playlist.Select(x => new InsertOneModel<Playlist>(x)));
+        await _playlistCollection.BulkWriteAsync(listWrites);
     }
 }
 

@@ -31,10 +31,10 @@ public class MongoController : ControllerBase
     }
 
     [HttpGet("get/{amount}")]
-    public async Task<IActionResult> Get(long amount)
+    public IActionResult Get(int amount)
     {
         _stopwatch.Start();
-        var data = await _mongoDBService.GetAllAsync();
+        var data = _mongoDBService.GetAll(amount);
         _stopwatch.Stop();
         // log
         _logger.LogInformation($"for {amount} data getting => Elapsed Time is {_stopwatch.ElapsedMilliseconds} ms");
